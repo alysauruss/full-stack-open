@@ -10,7 +10,6 @@ const Anecdote = ({ anecdotes }) => (
 )
 
 const Votes = ({ votes }) => {
-
   return (
     <p>This anecdote has {votes} votes!</p>
   )
@@ -31,7 +30,7 @@ const App = () => {
   const [selected, setSelected] = useState(0)
 
   const handleRandom = () => {
-    const random = Math.floor(Math.random() * anecdotes.length);
+    const random = Math.floor(Math.random() * anecdotes.length); //generate random num 0 - 7
     setSelected(random)
   }
 
@@ -40,27 +39,26 @@ const App = () => {
   const handleVote = () => {
     const copy = [...votes]
     copy[selected] += 1
-    setVotes(copy)
+    setVotes(copy) //update the votes array
   }
+
+  const highestValue = Math.max(...votes) //gets the highest num on the array
+  const highestIndex = votes.indexOf(highestValue); //gets the index of that num
 
   return (
     <div>
+      <h1>Anecdote of the Day</h1>
       <Anecdote anecdotes={anecdotes[selected]} />
       <Votes votes={votes[selected]} />
 
       <Button onClick={handleVote} text="Vote" />
       <Button onClick={handleRandom} text="Next Anecdotes" />
 
-      <div>
-        {votes.map((vote, index) => (
-          <div key={index}>
-            {index} : {vote}
-          </div>
-        ))}
-      </div>
+      <h1>Anecdote with the most votes</h1>
+      <Anecdote anecdotes={anecdotes[highestIndex]} />
+      <Votes votes={highestValue} />
     </div>
   )
 }
-
 
 export default App
