@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import './App.css'
+import pbServices from './services/phonebook'
 
 const PersonForm = ({ persons, setPersons }) => {
   const [newName, setNewName] = useState('')
@@ -8,28 +10,52 @@ const PersonForm = ({ persons, setPersons }) => {
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    const validate = persons.some((item) => {
+    const person = persons.find((item) => {
       return newName.trim().toLowerCase() === item.name.toLowerCase()
     })
 
-    if (validate) {
-      alert(`${newName} is already added to phonebook`);
-      setNewName('')
-    }
-    else if (!newName) {
+    if (!newName) {
       alert('You must add a name!');
     }
     else if (!newNumber) {
       alert('You must add a number!');
     }
+    else if (person != undefined) {
+      if (window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`)) {
+        const id = person.id
+        const changedNumber = { ...person, number: newNumber.trim() }
+
+        pbServices
+          .update(id, changedNumber)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id === id ? returnedPerson : person))
+            setNewName('')
+            setNewNumber('')
+          })
+          .catch(error => {
+            console.error('Failed to update phonebook:', error.message)
+            alert('Failed to update. Please try again.')
+          })
+      }
+    }
+
     else {
       const personObj = {
         name: newName.trim(),
         number: newNumber.trim(),
       }
-      setPersons(persons.concat(personObj)) //add the new note on to array
-      setNewName('') //set value of the form to ''
-      setNewNumber('')
+
+      pbServices
+        .create(personObj)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))//add the new note on to the db server
+          setNewName('') //set value of the form to ''
+          setNewNumber('')
+        })
+        .catch(error => {
+          console.error('Failed to add to phonebook:', error.message)
+          alert('Failed to add to phonebook. Please try again.')
+        })
     }
   }
 
@@ -50,26 +76,57 @@ const Search = ({ search, setSearch }) => (
   </div>
 )
 
-const Persons = ({ persons }) => (
-  <div>
+const Persons = ({ persons, deletePerson }) => (
+  <>
     {persons.map(person =>
-      <p key={person.name}> {person.name} | {person.number} </p>
+      <div key={person.id} className='personList'>
+        <p> {person.name} | {person.number} </p>
+        <button onClick={() => deletePerson(person.id)}>Delete</button>
+      </div>
     )}
-  </div>
+  </>
 )
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ])
-
+  const [persons, setPersons] = useState([])
   const [search, setSearch] = useState('')
+
+  useEffect(() => {
+    pbServices
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
+      })
+      .catch(error => {
+        console.error('Failed to load phonebook:', error.message)
+        alert('Could not load phonebook from the server.')
+      })
+  }, [])
+  console.log('render', persons.length, 'persons')
+
   const filteredPersons = persons.filter(person =>
     person.name.toLowerCase().includes(search.toLowerCase())
   )
+
+  const deletePerson = (id) => {
+    const person = persons.find(p => p.id === id) //find the note with the given id in the persons array
+    if (window.confirm(`Delete ${person.name} from phonebook?`)) {
+      console.log('user deleted');
+      pbServices
+        .deleteP(id)
+        .then(() => {
+          setPersons(persons.filter(p => p.id !== id)) //deletes the person on local array
+        })
+        .catch(error => {
+          console.error('Failed to delete:', error.message)
+          alert(`Could not delete ${person.name} from the server.`)
+        })
+    } else {
+      console.log('cancel');
+    }
+
+
+  }
 
   return (
     <div>
@@ -80,7 +137,7 @@ const App = () => {
       <PersonForm persons={persons} setPersons={setPersons} />
 
       <h2>Numbers</h2>
-      <Persons persons={filteredPersons} />
+      <Persons persons={filteredPersons} deletePerson={deletePerson} />
     </div>
   )
 }
