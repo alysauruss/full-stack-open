@@ -24,11 +24,6 @@
       "id": "a703",
       "name": "sadsad",
       "number": "21321-2312"
-    },
-    {
-      "id": "15e7",
-      "name": "qa",
-      "number": "11111111"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

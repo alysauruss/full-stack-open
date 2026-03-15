@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
-import './App.css'
 import pbServices from './services/phonebook'
+import Notification from './components/Notification'
 
-const PersonForm = ({ persons, setPersons }) => {
+const PersonForm = ({ persons, setPersons, setNotification }) => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
 
@@ -24,17 +23,24 @@ const PersonForm = ({ persons, setPersons }) => {
       if (window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`)) {
         const id = person.id
         const changedNumber = { ...person, number: newNumber.trim() }
-
+        const personName = person.name
         pbServices
           .update(id, changedNumber)
           .then(returnedPerson => {
             setPersons(persons.map(person => person.id === id ? returnedPerson : person))
+            setNotification({ text: `Updated ${returnedPerson.name}'s number!`, type: 'success' })
+            setTimeout(() => {
+              setNotification({ text: null, type: null })
+            }, 5000)
             setNewName('')
             setNewNumber('')
           })
           .catch(error => {
             console.error('Failed to update phonebook:', error.message)
-            alert('Failed to update. Please try again.')
+            setNotification({ text: `Information of ${personName} has already been removed from server`, type: 'error' })
+            setTimeout(() => {
+              setNotification({ text: null, type: null })
+            }, 5000)
           })
       }
     }
@@ -48,13 +54,21 @@ const PersonForm = ({ persons, setPersons }) => {
       pbServices
         .create(personObj)
         .then(returnedPerson => {
-          setPersons(persons.concat(returnedPerson))//add the new note on to the db server
+          setPersons(persons.concat(returnedPerson))//add the new person on to the db server
+          setNotification({ text: `Added ${returnedPerson.name}`, type: 'success' })
+          setTimeout(() => {
+            setNotification({ text: null, type: null })
+          }, 5000)
+
           setNewName('') //set value of the form to ''
           setNewNumber('')
         })
         .catch(error => {
           console.error('Failed to add to phonebook:', error.message)
-          alert('Failed to add to phonebook. Please try again.')
+          setNotification({ text: `Failed to add ${returnedPerson.name} to phonebook. Please try again.`, type: 'error' })
+          setTimeout(() => {
+            setNotification({ text: null, type: null })
+          }, 5000)
         })
     }
   }
@@ -90,6 +104,10 @@ const Persons = ({ persons, deletePerson }) => (
 const App = () => {
   const [persons, setPersons] = useState([])
   const [search, setSearch] = useState('')
+  const [notification, setNotification] = useState({
+    text: null,
+    type: null
+  });
 
   useEffect(() => {
     pbServices
@@ -116,10 +134,17 @@ const App = () => {
         .deleteP(id)
         .then(() => {
           setPersons(persons.filter(p => p.id !== id)) //deletes the person on local array
+          setNotification({ text: `Deleted ${person.name}`, type: 'success' })
+          setTimeout(() => {
+            setNotification({ text: null, type: null })
+          }, 5000)
         })
         .catch(error => {
           console.error('Failed to delete:', error.message)
-          alert(`Could not delete ${person.name} from the server.`)
+          setNotification({ text: `Could not delete ${person.name} from the server.`, type: 'error' })
+          setTimeout(() => {
+            setNotification({ text: null, type: null })
+          }, 5000)
         })
     } else {
       console.log('cancel');
@@ -131,12 +156,13 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification notification={notification.text} type={notification.type} />
       <Search search={search} setSearch={setSearch} />
 
       <h3>Add a new</h3>
-      <PersonForm persons={persons} setPersons={setPersons} />
+      <PersonForm persons={persons} setPersons={setPersons} setNotification={setNotification} />
 
-      <h2>Numbers</h2>
+      <h3>Numbers</h3>
       <Persons persons={filteredPersons} deletePerson={deletePerson} />
     </div>
   )
