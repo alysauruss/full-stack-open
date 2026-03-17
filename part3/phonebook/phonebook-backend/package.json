@@ -10,10 +10,11 @@
     "start": "node index.js",
     "dev": "node --watch index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:ui": "rimraf dist && cd ../phonebook-frontend && npm run build && xcopy /E /I dist ..\\phonebook-backend\\dist",
+    "build:ui": "rimraf dist && cd ..\\phonebook-frontend && npm run build && xcopy dist ..\\phonebook-backend\\dist /E /I /Y",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
   },
   "dependencies": {
+    "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "mongoose": "^9.3.0",
     "morgan": "^1.10.1",

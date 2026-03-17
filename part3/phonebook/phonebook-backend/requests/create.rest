@@ -1,10 +1,7 @@
-GET http://localhost:3001/api/phonebook/
-
-###
 POST http://localhost:3001/api/phonebook
 Content-Type: application/json
 
 {
-  "name": "Testing name",
-  "number": "111111"
+  "name": "Magic De Neza",
+  "number": "0962-722892"
 }

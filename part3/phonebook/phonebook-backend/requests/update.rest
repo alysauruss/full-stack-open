@@ -1,0 +1,7 @@
+PUT http://localhost:3001/api/phonebook/69b840cad41a535a266a0a40
+Content-Type: application/json
+
+{
+    "name": "testing update rest",
+    "number": "11111-99999"
+}
