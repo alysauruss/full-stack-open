@@ -52,9 +52,9 @@ const PersonForm = ({ persons, setPersons, setNotification }) => {
 
             pbServices
                 .create(personObj)
-                .then(returnedPerson => {
-                    setPersons(persons.concat(returnedPerson))//add the new person on to the db server
-                    setNotification({ text: `Added ${returnedPerson.name}`, type: 'success' })
+                .then(createdPerson => {
+                    setPersons(persons.concat(createdPerson))//add the new person on to the db server
+                    setNotification({ text: `Added ${createdPerson.name}`, type: 'success' })
                     setTimeout(() => {
                         setNotification({ text: null, type: null })
                     }, 5000)
@@ -63,11 +63,11 @@ const PersonForm = ({ persons, setPersons, setNotification }) => {
                     setNewNumber('')
                 })
                 .catch(error => {
-                    console.error('Failed to add to phonebook:', error.message)
-                    setNotification({ text: `Failed to add ${returnedPerson.name} to phonebook. Please try again.`, type: 'error' })
+                    setNotification({ text: `${error.response.data.error}`, type: 'error' })
                     setTimeout(() => {
                         setNotification({ text: null, type: null })
                     }, 5000)
+                    console.error('Failed to add to phonebook:', error.message)
                 })
         }
     }
