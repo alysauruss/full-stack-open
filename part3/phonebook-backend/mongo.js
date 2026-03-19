@@ -27,10 +27,12 @@ if (process.argv.length === 3) {
   });
 }
 
-else if (process.argv.length === 4) {
+if (process.argv.length === 4) {
   console.log('please add a number');
   process.exit(1);
-} else if (process.argv.length === 5) {
+}
+
+if (process.argv.length === 5) {
   const person = new Person({
     name: process.argv[3],
     number: process.argv[4],
