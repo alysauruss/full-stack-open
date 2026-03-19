@@ -8,7 +8,7 @@
     "scripts": {
     "start": "node index.js",
     "dev": "node --watch index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test",
     "lint": "eslint .",
     "build:ui": "rimraf dist && cd ..\\bloglist-frontend && npm run build && xcopy dist ..\\bloglist-backend\\dist /E /I /Y",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
