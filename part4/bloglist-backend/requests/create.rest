@@ -1,7 +1,31 @@
+### BLOGS
 POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNvZGVKIiwiaWQiOiI2OWJmY2Q1ODQxNWY3MDcxM2NmZTU1MjYiLCJpYXQiOjE3NzQxOTI3NzUsImV4cCI6MTc3NDE5NjM3NX0.3ataBZ4ogSX_Tva1CeU1WBXvVDrgkQw2NZxmYgcTV3U
+
+{
+  "title": "TEST autH",
+  "author": "Coding Jesus",
+  "url": "https://www.youtube.com/watch?v=xNeggiRjnas",
+  "likes": 10
+}
+
+### USERS
+POST http://localhost:3003/api/users
 Content-Type: application/json
 
 {
-  "author": "Edward Hsing",
-  "likes": 8
+  "username": "testauth",
+  "name": "Auth Name",
+  "password": "testauth"
+}
+
+### USERS
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+  "username": "ari",
+  "name": "Ariana Grande",
+  "password": "ari"
 }
