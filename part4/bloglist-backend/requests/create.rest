@@ -2,8 +2,6 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "I Bought a Domain at 15. Now It Powers 400,000+ Users.",
   "author": "Edward Hsing",
-  "url": "https://dev.to/edwardhsing/i-bought-a-domain-at-15-now-it-powers-400000-users-7ol",
   "likes": 8
 }

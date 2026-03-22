@@ -36,7 +36,7 @@ export default [
 
       // --- Functions ---
       'prefer-arrow-callback': 'error', // use arrow functions in callbacks, not function()
-      'arrow-body-style': ['error', 'as-needed'], // omit {} and return when not needed
+      // 'arrow-body-style': ['error', 'as-needed'], // omit {} and return when not needed
       'arrow-parens': ['error', 'always'], // always include parentheses around arrow function parameters
 
       // --- Objects & Arrays ---

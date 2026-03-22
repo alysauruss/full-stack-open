@@ -1,0 +1,9 @@
+PUT http://localhost:3003/api/blogs/69bd366a24cbfe3d55362daa
+Content-Type: application/json
+
+{
+  "title": "I Bought",
+  "author": "Edward Hsing",
+  "url": "https://dev.to/edwardhsing/i-bought-a-domain-at-15-now-it-powers-400000-users-7ol",
+  "likes": 8
+}
